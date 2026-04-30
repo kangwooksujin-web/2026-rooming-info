@@ -109,7 +109,7 @@
       align-items: center;
       justify-content: center;
       gap: 10px;
-      margin-bottom: 16px;
+      margin-bottom: 6px;
       color: var(--navy-primary);
       font-weight: 800;
       font-size: 0.95rem;
@@ -127,6 +127,30 @@
 
     .timeline-caption::after {
       background: linear-gradient(90deg, rgba(95,127,74,0.5), transparent);
+    }
+
+    .timeline-hint {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin: 0 0 16px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(232,246,255,0.78);
+      border: 1px solid rgba(159,200,232,0.58);
+      color: var(--sky-deep);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .timeline-hint::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--spring-green);
+      box-shadow: 0 0 0 5px rgba(143,184,110,0.18);
     }
 
     .timeline-bar {
@@ -230,6 +254,38 @@
     .timeline-fee {
       background: linear-gradient(180deg, #ffe9e4 0%, #f2b5a9 100%);
       color: #7f1d1d;
+    }
+
+    .timeline-detail {
+      position: relative;
+      min-height: 3.5em;
+      margin-top: 16px;
+      padding: 14px 16px 14px 44px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.88);
+      border: 1px solid rgba(159,200,232,0.46);
+      color: var(--text-dark);
+      font-weight: 700;
+      text-align: left;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.65);
+    }
+
+    .timeline-detail::before {
+      content: "";
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: currentColor;
+      opacity: 0.48;
+    }
+
+    .timeline-detail.is-fee {
+      border-color: rgba(213,111,97,0.36);
+      color: #7f1d1d;
+      background: rgba(255,247,245,0.92);
     }
 
     section {
@@ -525,6 +581,7 @@
       <p class="helpdesk-subtitle">[Convention Rooming Department]</p>
       <div id="reservation-timeline" class="reservation-timeline" aria-label="Reservation timeline">
         <div class="timeline-caption">Reservation Timeline</div>
+        <p class="timeline-hint">Click each date to view details.</p>
         <div class="timeline-bar" role="tablist" aria-label="Important reservation dates">
           <button type="button" class="timeline-segment timeline-open" data-timeline-key="open" role="tab">
             <span class="timeline-node" aria-hidden="true"></span>
@@ -550,6 +607,9 @@
             <strong>Fee Applies</strong>
             <span class="timeline-note">1 night's stay</span>
           </button>
+        </div>
+        <div id="timeline-detail" class="timeline-detail" aria-live="polite">
+          Click a timeline date above to see what is available during each period.
         </div>
       </div>
     </header>
@@ -862,12 +922,26 @@
       return 'fee';
     }
 
+    const TIMELINE_DETAILS = {
+      open: 'Reservations open on May 1, Friday, at 8:00 AM.',
+      booking: 'You may make or change your reservation until June 14, Sunday, at 11:59 PM.',
+      cancel: 'You may cancel without a penalty until July 8, Wednesday.',
+      fee: 'After July 8, free cancellation is no longer available. A cancellation fee equal to one night\'s stay will apply.'
+    };
+
     function setTimelineActive(key) {
+      const detailElement = document.getElementById('timeline-detail');
+
       document.querySelectorAll('[data-timeline-key]').forEach((button) => {
         const isActive = button.dataset.timelineKey === key;
         button.classList.toggle('is-active', isActive);
         button.setAttribute('aria-selected', String(isActive));
       });
+
+      if (detailElement) {
+        detailElement.textContent = TIMELINE_DETAILS[key] || TIMELINE_DETAILS.open;
+        detailElement.classList.toggle('is-fee', key === 'fee');
+      }
     }
 
     function initializeReservationTimeline(today = new Date()) {
