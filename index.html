@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 Hotel Reservation Guide</title>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-cream: #faf7f2;
+      --navy-primary: #1a365d;
+      --gold-accent: #c5a059;
+      --text-dark: #2d3748;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background-color: var(--bg-cream);
+      font-family: 'Noto Sans KR', sans-serif;
+      color: var(--text-dark);
+      line-height: 1.7;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    .watercolor-bg {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at 10% 20%, rgba(197, 160, 89, 0.05) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(91, 122, 88, 0.05) 0%, transparent 40%);
+      z-index: -1;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+      animation: fadeInDown 1s ease;
+    }
+
+    .convention-logo {
+      font-family: 'Merriweather', serif;
+      font-size: 1.2rem;
+      color: var(--gold-accent);
+      letter-spacing: 3px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-family: 'Merriweather', serif;
+      font-size: 2.5rem;
+      color: var(--navy-primary);
+      margin: 0;
+      line-height: 1.2;
+    }
+
+    section {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 35px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+      border: 1px solid rgba(197,160,89,0.1);
+      animation: fadeInUp 0.8s ease forwards;
+    }
+
+    h2 {
+      font-family: 'Merriweather', serif;
+      color: var(--navy-primary);
+      border-bottom: 2px solid var(--bg-cream);
+      padding-bottom: 15px;
+      margin-top: 0;
+    }
+
+    .data-row {
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed #eee;
+    }
+    
+    .data-row:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .text-content {
+      margin-bottom: 15px;
+      font-size: 1rem;
+    }
+
+    /* 시트에서 불러온 이미지를 위한 스타일 */
+    .instruction-image {
+      max-width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      border: 1px solid #f0f0f0;
+      display: block;
+      margin: 15px auto;
+    }
+
+    .loading {
+      text-align: center;
+      font-size: 1.2rem;
+      color: var(--gold-accent);
+      padding: 50px;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 1.8rem; }
+      section { padding: 25px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="watercolor-bg"></div>
+
+  <div class="container">
+    <header>
+      <span class="convention-logo">2026 ENGLISH REGIONAL CONVENTION</span>
+      <h1>ETERNAL HAPPINESS</h1>
+      <p style="color: var(--navy-primary); font-weight: 500; margin-top: 15px;">Reservation Starts: May 1, 08:00 AM</p>
+    </header>
+
+    <div id="content-area">
+      <div class="loading">Loading reservation guide...</div>
+    </div>
+  </div>
+
+  <script>
+    // ★ 여기에 앱스스크립트에서 새로 배포한 '웹앱 URL'을 붙여넣으세요 ★
+    const APPS_SCRIPT_URL = 'YOUR_WEB_APP_URL_HERE'https://script.google.com/macros/s/AKfycbw7w5o6ptYwJMAUauX0YskpLQ1rbgV0IYPYjb2PpVpsTqrSqct6q5TgF2TFZH-WpxiN/exec;
+
+    async function loadData() {
+      try {
+        const response = await fetch(APPS_SCRIPT_URL);
+        const data = await response.json();
+        renderUI(data);
+      } catch (error) {
+        document.getElementById('content-area').innerHTML = '<p style="text-align:center; color:red;">Failed to load data. Please check the connection.</p>';
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    function renderUI(data) {
+      const contentArea = document.getElementById('content-area');
+      contentArea.innerHTML = ''; // 로딩 메시지 제거
+
+      let currentSection = null;
+      let currentTitle = '';
+
+      data.forEach((row) => {
+        // 'Welcome' 등 특정 타이틀은 건너뛰거나 처리 방식 변경 가능
+        if (row['Title'] === 'Welcome' || !row['Data 1']) return;
+
+        // 새로운 Title이 나타나면 새로운 Section(카드) 생성
+        if (row['Title'] && row['Title'] !== currentTitle) {
+          currentTitle = row['Title'];
+          currentSection = document.createElement('section');
+          
+          const header = document.createElement('h2');
+          header.textContent = currentTitle;
+          currentSection.appendChild(header);
+          
+          contentArea.appendChild(currentSection);
+        }
+
+        // 데이터와 이미지를 담을 컨테이너 생성
+        if (currentSection) {
+          const rowDiv = document.createElement('div');
+          rowDiv.className = 'data-row';
+
+          // Data 1 & Data 2 텍스트 추가
+          const textDiv = document.createElement('div');
+          textDiv.className = 'text-content';
+          let textHTML = `<strong>${row['Data 1'] || ''}</strong>`;
+          if (row['Data 2']) {
+            textHTML += `<br>${row['Data 2']}`;
+          }
+          textDiv.innerHTML = textHTML;
+          rowDiv.appendChild(textDiv);
+
+          // Image 열에 링크가 있으면 <img> 태그 추가
+          if (row['Image']) {
+            const img = document.createElement('img');
+            img.src = row['Image'];
+            img.className = 'instruction-image';
+            img.alt = 'Guide Instruction';
+            img.loading = 'lazy'; // 로딩 속도 최적화
+            rowDiv.appendChild(img);
+          }
+
+          currentSection.appendChild(rowDiv);
+        }
+      });
+    }
+
+    // 페이지가 로드되면 데이터 가져오기 시작
+    window.addEventListener('DOMContentLoaded', loadData);
+  </script>
+</body>
+</html>
