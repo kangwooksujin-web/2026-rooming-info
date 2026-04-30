@@ -372,7 +372,7 @@
     <header>
       <span class="convention-logo">2026 ENGLISH REGIONAL CONVENTION</span>
       <h1>ETERNAL HAPPINESS</h1>
-      <p class="helpdesk-subtitle">2026 English Regional Convention Rooming Help Desk</p>
+      <p class="helpdesk-subtitle">[Convention Rooming Department]</p>
       <p id="reservation-status" class="reservation-status">May 1, 08:00 AM</p>
     </header>
 
@@ -598,19 +598,21 @@
       const section = createSection(sectionData.title);
       const card = document.createElement('div');
       card.className = 'support-card';
-
-      sectionData.rows.forEach((row) => {
-        const item = document.createElement('div');
-        item.className = 'data-row';
-
-        const textDiv = document.createElement('div');
-        textDiv.className = 'text-content';
-        textDiv.innerHTML = `<strong>${formatLabel(row['Data 1'])}</strong>`;
-        if (row['Data 2']) textDiv.innerHTML += `<br>${formatText(row['Data 2'])}`;
-        item.appendChild(textDiv);
-
-        card.appendChild(item);
-      });
+      card.innerHTML = `
+        <h3>Need help with your hotel reservation?</h3>
+        <p>If you have any questions about accommodations, please send us a text message. We will do our best to reply <span class="highlight-red">within 24 hours</span> whenever possible.</p>
+        <p>For general hotel and accommodation questions, contact Jung Hyun Myoung. For technical issues during the reservation process, contact Lee Moonkyung.</p>
+        <div class="support-actions">
+          <a class="sms-link" href="sms:01035896061">
+            <strong>💬 Text Jung Hyun Myoung</strong>
+            Accommodation questions<br>010-3589-6061
+          </a>
+          <a class="sms-link" href="sms:01055241935">
+            <strong>💬 Text Lee Moonkyung</strong>
+            Reservation process errors<br>010-5524-1935
+          </a>
+        </div>
+      `;
 
       section.appendChild(card);
       return section;
