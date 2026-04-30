@@ -98,6 +98,122 @@
     }
 
     /* 시트에서 불러온 이미지를 위한 스타일 */
+    .section-note {
+      color: #4a5568;
+      margin: -5px 0 25px;
+    }
+
+    .step-block {
+      background: #fbfaf7;
+      border: 1px solid rgba(197,160,89,0.18);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 22px;
+    }
+
+    .step-block h3,
+    .support-card h3 {
+      color: var(--navy-primary);
+      margin: 0 0 16px;
+      font-size: 1.25rem;
+    }
+
+    .step-item {
+      padding: 16px 0;
+      border-top: 1px dashed #e6dfd3;
+    }
+
+    .step-item:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .step-item p {
+      margin: 0 0 12px;
+    }
+
+    .room-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .room-card {
+      border: 1px solid rgba(26,54,93,0.12);
+      border-radius: 16px;
+      overflow: hidden;
+      background: #fff;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+    }
+
+    .room-card .instruction-image {
+      border: none;
+      border-radius: 0;
+      box-shadow: none;
+      margin: 0;
+      width: 100%;
+    }
+
+    .room-card-body {
+      padding: 16px;
+    }
+
+    .room-card h3 {
+      color: var(--navy-primary);
+      font-size: 1.05rem;
+      margin: 0 0 8px;
+    }
+
+    .room-card p {
+      margin: 0;
+      color: #4a5568;
+    }
+
+    .support-card {
+      background: #fbfaf7;
+      border: 1px solid rgba(197,160,89,0.2);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 18px;
+    }
+
+    .support-card p {
+      margin: 0 0 14px;
+    }
+
+    .support-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 18px;
+    }
+
+    .sms-link {
+      display: block;
+      padding: 16px;
+      border-radius: 14px;
+      background: var(--white);
+      color: var(--navy-primary);
+      text-decoration: none;
+      border: 1px solid rgba(26,54,93,0.14);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .sms-link:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(26,54,93,0.08);
+    }
+
+    .sms-link strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .highlight-red {
+      color: #c53030;
+      font-weight: 700;
+    }
+
     .instruction-image {
       max-width: 100%;
       height: auto;
@@ -128,6 +244,10 @@
     @media (max-width: 600px) {
       h1 { font-size: 1.8rem; }
       section { padding: 25px; }
+      .room-grid,
+      .support-actions {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -161,57 +281,186 @@
       }
     }
 
-    function renderUI(data) {
-      const contentArea = document.getElementById('content-area');
-      contentArea.innerHTML = ''; // 로딩 메시지 제거
+    function escapeHTML(value) {
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
 
+    function formatText(value) {
+      return escapeHTML(value)
+        .replace(/\*\*(.*?)\*\*/g, '<span class="highlight-red">$1</span>')
+        .replace(/\n/g, '<br>');
+    }
+
+    function makeImage(src, altText) {
+      if (!src) return null;
+      const img = document.createElement('img');
+      img.src = src;
+      img.className = 'instruction-image';
+      img.alt = altText;
+      img.loading = 'lazy';
+      return img;
+    }
+
+    function groupRowsBySection(data) {
+      const sections = [];
       let currentSection = null;
-      let currentTitle = '';
 
       data.forEach((row) => {
-        // 'Welcome' 등 특정 타이틀은 건너뛰거나 처리 방식 변경 가능
         if (row['Title'] === 'Welcome' || !row['Data 1']) return;
 
-        // 새로운 Title이 나타나면 새로운 Section(카드) 생성
-        if (row['Title'] && row['Title'] !== currentTitle) {
-          currentTitle = row['Title'];
-          currentSection = document.createElement('section');
-          
-          const header = document.createElement('h2');
-          header.textContent = currentTitle;
-          currentSection.appendChild(header);
-          
-          contentArea.appendChild(currentSection);
+        if (row['Title']) {
+          currentSection = { title: row['Title'], rows: [] };
+          sections.push(currentSection);
         }
 
-        // 데이터와 이미지를 담을 컨테이너 생성
-        if (currentSection) {
-          const rowDiv = document.createElement('div');
-          rowDiv.className = 'data-row';
+        if (currentSection) currentSection.rows.push(row);
+      });
 
-          // Data 1 & Data 2 텍스트 추가
-          const textDiv = document.createElement('div');
-          textDiv.className = 'text-content';
-          let textHTML = `<strong>${row['Data 1'] || ''}</strong>`;
-          if (row['Data 2']) {
-            textHTML += `<br>${row['Data 2']}`;
-          }
-          textDiv.innerHTML = textHTML;
-          rowDiv.appendChild(textDiv);
+      return sections;
+    }
 
-          // Image 열에 링크가 있으면 <img> 태그 추가
-          if (row['Image']) {
-            const img = document.createElement('img');
-            img.src = row['Image'];
-            img.className = 'instruction-image';
-            img.alt = 'Guide Instruction';
-            img.loading = 'lazy'; // 로딩 속도 최적화
-            rowDiv.appendChild(img);
-          }
+    function createSection(title) {
+      const section = document.createElement('section');
+      const header = document.createElement('h2');
+      header.textContent = title;
+      section.appendChild(header);
+      return section;
+    }
 
-          currentSection.appendChild(rowDiv);
+    function renderDefaultSection(sectionData) {
+      const section = createSection(sectionData.title);
+
+      sectionData.rows.forEach((row) => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'data-row';
+
+        const textDiv = document.createElement('div');
+        textDiv.className = 'text-content';
+        textDiv.innerHTML = `<strong>${formatText(row['Data 1'])}</strong>`;
+        if (row['Data 2']) textDiv.innerHTML += `<br>${formatText(row['Data 2'])}`;
+        rowDiv.appendChild(textDiv);
+
+        const img = makeImage(row['Image'], 'Guide instruction');
+        if (img) rowDiv.appendChild(img);
+
+        section.appendChild(rowDiv);
+      });
+
+      return section;
+    }
+
+    function renderReservationSteps(sectionData) {
+      const section = createSection(sectionData.title);
+      const note = document.createElement('p');
+      note.className = 'section-note';
+      note.innerHTML = 'Follow each step in order. <span class="highlight-red">Please complete email verification within 10 minutes.</span>';
+      section.appendChild(note);
+
+      const stepGroups = new Map();
+      sectionData.rows.forEach((row) => {
+        const stepTitle = row['Data 1'];
+        if (!stepGroups.has(stepTitle)) stepGroups.set(stepTitle, []);
+        stepGroups.get(stepTitle).push(row);
+      });
+
+      stepGroups.forEach((rows, stepTitle) => {
+        const block = document.createElement('div');
+        block.className = 'step-block';
+        block.innerHTML = `<h3>${formatText(stepTitle)}</h3>`;
+
+        rows.forEach((row) => {
+          const item = document.createElement('div');
+          item.className = 'step-item';
+          item.innerHTML = `<p>${formatText(row['Data 2'])}</p>`;
+
+          const img = makeImage(row['Image'], `${stepTitle} guide instruction`);
+          if (img) item.appendChild(img);
+
+          block.appendChild(item);
+        });
+
+        section.appendChild(block);
+      });
+
+      return section;
+    }
+
+    function renderRoomInformation(sectionData) {
+      const section = createSection(sectionData.title);
+      const note = document.createElement('p');
+      note.className = 'section-note';
+      note.textContent = 'Compare the available hotel room types at a glance before choosing your room.';
+      section.appendChild(note);
+
+      const grid = document.createElement('div');
+      grid.className = 'room-grid';
+
+      sectionData.rows.forEach((row) => {
+        const card = document.createElement('div');
+        card.className = 'room-card';
+
+        const img = makeImage(row['Image'], `${row['Data 1']} room type`);
+        if (img) card.appendChild(img);
+
+        const body = document.createElement('div');
+        body.className = 'room-card-body';
+        body.innerHTML = `<h3>${formatText(row['Data 1'])}</h3><p>${formatText(row['Data 2'])}</p>`;
+        card.appendChild(body);
+
+        grid.appendChild(card);
+      });
+
+      section.appendChild(grid);
+      return section;
+    }
+
+    function renderSupport(sectionData) {
+      const section = createSection(sectionData.title);
+      const card = document.createElement('div');
+      card.className = 'support-card';
+      card.innerHTML = `
+        <h3>Need help with your hotel reservation?</h3>
+        <p>If you have any questions about accommodations, please send us a text message. We will do our best to reply <span class="highlight-red">within 24 hours</span> whenever possible.</p>
+        <p>For general hotel and accommodation questions, contact Jung Hyun Myoung. For technical issues during the reservation process, contact Lee Moonkyung.</p>
+        <div class="support-actions">
+          <a class="sms-link" href="sms:01035896061">
+            <strong>💬 Text Jung Hyun Myoung</strong>
+            Accommodation questions<br>010-3589-6061
+          </a>
+          <a class="sms-link" href="sms:01055241935">
+            <strong>💬 Text Lee Moonkyung</strong>
+            Reservation process errors<br>010-5524-1935
+          </a>
+        </div>
+      `;
+      section.appendChild(card);
+      return section;
+    }
+
+    function renderStructuredUI(data, contentArea) {
+      contentArea.innerHTML = '';
+
+      groupRowsBySection(data).forEach((sectionData) => {
+        if (sectionData.title === '2. Reservation Steps') {
+          contentArea.appendChild(renderReservationSteps(sectionData));
+        } else if (sectionData.title === '3. Important Room Information') {
+          contentArea.appendChild(renderRoomInformation(sectionData));
+        } else if (sectionData.title === '6. Support') {
+          contentArea.appendChild(renderSupport(sectionData));
+        } else {
+          contentArea.appendChild(renderDefaultSection(sectionData));
         }
       });
+    }
+
+    function renderUI(data) {
+      const contentArea = document.getElementById('content-area');
+      renderStructuredUI(data, contentArea);
     }
 
     // 페이지가 로드되면 데이터 가져오기 시작
