@@ -836,19 +836,33 @@
       const section = createSection(sectionData.title);
       const card = document.createElement('div');
       card.className = 'support-card';
-      card.innerHTML = `
-        <p>If you have any questions about accommodations, please send us a text message. We will do our best to reply <span class="highlight-red">within 24 hours</span> whenever possible.</p>
-        <div class="support-actions">
-          <a class="sms-link" href="sms:01035896061">
-            <strong>Accommodation questions:</strong>
-            <span class="highlight-red"><span class="action-chip">Hyun-myoung Jung 💬</span></span>
-          </a>
-          <a class="sms-link" href="sms:01055241935">
-            <strong>Reservation process errors:</strong>
-            <span class="highlight-red"><span class="action-chip">Moon-kyung Lee 💬</span></span>
-          </a>
-        </div>
-      `;
+
+      const [introRow, ...supportRows] = sectionData.rows;
+      if (introRow) {
+        const intro = document.createElement('p');
+        intro.innerHTML = [introRow['Data 1'], introRow['Data 2']]
+          .filter(Boolean)
+          .map(formatText)
+          .join('<br>');
+        card.appendChild(intro);
+      }
+
+      if (supportRows.length > 0) {
+        const actions = document.createElement('div');
+        actions.className = 'support-actions';
+
+        supportRows.forEach((row) => {
+          const item = document.createElement('div');
+          item.className = 'sms-link';
+          item.innerHTML = `
+            <strong>${formatLabel(row['Data 1'])}</strong>
+            <span>${formatText(row['Data 2'])}</span>
+          `;
+          actions.appendChild(item);
+        });
+
+        card.appendChild(actions);
+      }
 
       section.appendChild(card);
       return section;
