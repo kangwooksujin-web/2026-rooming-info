@@ -327,6 +327,13 @@
     .section-note {
       color: #4a5568;
       margin: -5px 0 25px;
+      font-weight: 800;
+    }
+
+    .copy-instruction {
+      display: block;
+      font-weight: 800;
+      color: var(--navy-primary);
     }
 
     .step-block {
@@ -898,7 +905,7 @@
       rowDiv.className = 'data-row';
       rowDiv.innerHTML = `
         <div class="text-content">
-          Click below to copy the address. Paste it into your browser and get started!
+          <span class="copy-instruction">Click below to copy the address. Paste it into your browser and get started!</span>
           <br><br>
           <button type="button" class="action-chip copy-link" data-copy-url="https://rl.jw.org">https://rl.jw.org</button>
           <div class="copy-message" aria-live="polite"></div>
