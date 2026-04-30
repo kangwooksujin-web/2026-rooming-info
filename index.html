@@ -449,6 +449,12 @@
       display: block;
     }
 
+    .sms-contact {
+      margin-top: 8px;
+      color: var(--sky-deep);
+      font-weight: 800;
+    }
+
     .sms-link .sms-hint {
       display: inline-flex;
       align-items: center;
@@ -863,6 +869,25 @@
       return '';
     }
 
+    function getSupportContact(label) {
+      const normalizedLabel = String(label || '').toLowerCase();
+      if (normalizedLabel.includes('general')) return 'Jung Hyun Myoung';
+      if (normalizedLabel.includes('technical')) return 'Lee Moonkyung';
+      return '';
+    }
+
+    function getSupportDescription(text, contactName) {
+      const plainText = String(text || '')
+        .replace(/\*\*/g, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      return plainText
+        .replace(new RegExp(`,?\\s*please text\\s+${contactName}\\.?$`, 'i'), '')
+        .replace(/\.$/, '')
+        .trim();
+    }
+
     function renderSupport(sectionData) {
       const section = createSection(sectionData.title);
       const card = document.createElement('div');
@@ -881,12 +906,15 @@
 
         supportRows.forEach((row) => {
           const smsHref = getSupportSmsHref(row['Data 1']);
+          const contactName = getSupportContact(row['Data 1']);
+          const description = getSupportDescription(row['Data 2'], contactName);
           const item = document.createElement(smsHref ? 'a' : 'div');
           item.className = 'sms-link';
           if (smsHref) item.href = smsHref;
           item.innerHTML = `
             <strong>${formatLabel(row['Data 1'])}</strong>
-            <span>${formatText(row['Data 2'])}</span>
+            <span>${formatText(description)}</span>
+            ${contactName ? `<span class="sms-contact">Text ${contactName}</span>` : ''}
             ${smsHref ? '<span class="sms-hint">Tap to send a text message</span>' : ''}
           `;
           actions.appendChild(item);
