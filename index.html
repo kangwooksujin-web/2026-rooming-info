@@ -23,17 +23,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-cream: #faf7f2;
-      --navy-primary: #1a365d;
-      --gold-accent: #c5a059;
-      --text-dark: #2d3748;
+      --bg-cream: #f4f9f5;
+      --sky-soft: #dcecfb;
+      --sky: #9fc8e8;
+      --sky-deep: #477da8;
+      --spring-green: #8fb86e;
+      --leaf-green: #5f7f4a;
+      --navy-primary: #243b53;
+      --gold-accent: #8dae62;
+      --text-dark: #24313f;
       --white: #ffffff;
     }
 
     * { box-sizing: border-box; }
 
     body {
-      background-color: var(--bg-cream);
+      background: linear-gradient(180deg, #eaf5ff 0%, #f7fbef 52%, #f4f9f5 100%);
       font-family: 'Noto Sans KR', sans-serif;
       color: var(--text-dark);
       line-height: 1.7;
@@ -44,13 +49,15 @@
     .watercolor-bg {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at 10% 20%, rgba(197, 160, 89, 0.05) 0%, transparent 40%),
-                  radial-gradient(circle at 90% 80%, rgba(91, 122, 88, 0.05) 0%, transparent 40%);
+      background: radial-gradient(circle at 15% 12%, rgba(159, 200, 232, 0.28) 0%, transparent 38%),
+                  radial-gradient(circle at 85% 20%, rgba(255, 255, 255, 0.7) 0%, transparent 28%),
+                  radial-gradient(circle at 92% 82%, rgba(143, 184, 110, 0.22) 0%, transparent 42%),
+                  radial-gradient(circle at 8% 78%, rgba(95, 127, 74, 0.12) 0%, transparent 34%);
       z-index: -1;
     }
 
     .container {
-      max-width: 800px;
+      max-width: 860px;
       margin: 0 auto;
       padding: 40px 20px;
     }
@@ -58,13 +65,14 @@
     header {
       text-align: center;
       margin-bottom: 50px;
+      padding: 24px 16px 10px;
       animation: fadeInDown 1s ease;
     }
 
     .convention-logo {
       font-family: 'Merriweather', serif;
       font-size: 1.2rem;
-      color: var(--gold-accent);
+      color: var(--leaf-green);
       letter-spacing: 3px;
       display: block;
       margin-bottom: 10px;
@@ -80,18 +88,18 @@
 
     section {
       background: var(--white);
-      border-radius: 20px;
+      border-radius: 18px;
       padding: 35px;
       margin-bottom: 30px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-      border: 1px solid rgba(197,160,89,0.1);
+      box-shadow: 0 14px 34px rgba(71,125,168,0.08);
+      border: 1px solid rgba(159,200,232,0.45);
       animation: fadeInUp 0.8s ease forwards;
     }
 
     h2 {
       font-family: 'Merriweather', serif;
       color: var(--navy-primary);
-      border-bottom: 2px solid var(--bg-cream);
+      border-bottom: 2px solid rgba(159,200,232,0.35);
       padding-bottom: 15px;
       margin-top: 0;
     }
@@ -120,8 +128,8 @@
     }
 
     .step-block {
-      background: #fbfaf7;
-      border: 1px solid rgba(197,160,89,0.18);
+      background: linear-gradient(180deg, #f8fcff 0%, #f6fbf1 100%);
+      border: 1px solid rgba(143,184,110,0.28);
       border-radius: 16px;
       padding: 22px;
       margin-bottom: 22px;
@@ -136,7 +144,7 @@
 
     .step-item {
       padding: 16px 0;
-      border-top: 1px dashed #e6dfd3;
+      border-top: 1px dashed rgba(95,127,74,0.25);
     }
 
     .step-item:first-of-type {
@@ -159,7 +167,7 @@
       border-radius: 16px;
       overflow: hidden;
       background: #fff;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+      box-shadow: 0 8px 20px rgba(71,125,168,0.08);
     }
 
     .room-card .instruction-image {
@@ -168,6 +176,9 @@
       box-shadow: none;
       margin: 0;
       width: 100%;
+      height: 190px;
+      max-height: 190px;
+      background: #f4f9f5;
     }
 
     .room-card-body {
@@ -186,8 +197,8 @@
     }
 
     .support-card {
-      background: #fbfaf7;
-      border: 1px solid rgba(197,160,89,0.2);
+      background: linear-gradient(180deg, #f8fcff 0%, #f5fbef 100%);
+      border: 1px solid rgba(143,184,110,0.28);
       border-radius: 16px;
       padding: 22px;
       margin-bottom: 18px;
@@ -211,7 +222,7 @@
       background: var(--white);
       color: var(--navy-primary);
       text-decoration: none;
-      border: 1px solid rgba(26,54,93,0.14);
+      border: 1px solid rgba(71,125,168,0.22);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
@@ -230,14 +241,64 @@
       font-weight: 700;
     }
 
+    .doc-heading {
+      display: block;
+      margin: 18px 0 10px;
+      padding: 10px 14px;
+      border-left: 5px solid var(--spring-green);
+      border-radius: 10px;
+      background: rgba(220,236,251,0.55);
+      color: var(--navy-primary);
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .doc-subheading {
+      display: block;
+      margin: 14px 0 8px;
+      color: var(--sky-deep);
+      font-weight: 700;
+    }
+
+    .doc-list {
+      margin: 10px 0 14px;
+      padding-left: 22px;
+    }
+
+    .doc-list li {
+      margin: 6px 0;
+    }
+
+    .action-chip {
+      display: inline-block;
+      margin: 0 2px;
+      padding: 2px 9px;
+      border-radius: 999px;
+      background: #e7f3ff;
+      border: 1px solid rgba(71,125,168,0.26);
+      color: var(--sky-deep);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
     .instruction-image {
+      width: min(100%, 640px);
       max-width: 100%;
+      max-height: 360px;
       height: auto;
+      object-fit: contain;
       border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
-      border: 1px solid #f0f0f0;
+      box-shadow: 0 6px 16px rgba(71,125,168,0.12);
+      border: 1px solid rgba(159,200,232,0.45);
       display: block;
       margin: 15px auto;
+      pointer-events: none;
+      cursor: default;
+      user-select: none;
+    }
+
+    .step-item .instruction-image {
+      max-height: 300px;
     }
 
     .loading {
@@ -260,6 +321,10 @@
     @media (max-width: 600px) {
       h1 { font-size: 1.8rem; }
       section { padding: 25px; }
+      .instruction-image,
+      .step-item .instruction-image {
+        max-height: 260px;
+      }
       .room-grid,
       .support-actions {
         grid-template-columns: 1fr;
@@ -306,10 +371,55 @@
         .replace(/'/g, '&#39;');
     }
 
-    function formatText(value) {
+    function formatInline(value) {
       return escapeHTML(value)
-        .replace(/\*\*(.*?)\*\*/g, '<span class="highlight-red">$1</span>')
-        .replace(/\n/g, '<br>');
+        .replace(/\[\[(.*?)\]\]/g, '<span class="action-chip">$1</span>')
+        .replace(/\*\*(.*?)\*\*/g, '<span class="highlight-red">$1</span>');
+    }
+
+    function formatText(value) {
+      const lines = String(value || '').split(/\r?\n/);
+      const parts = [];
+      let listItems = [];
+
+      function flushList() {
+        if (!listItems.length) return;
+        parts.push(`<ul class="doc-list">${listItems.map((item) => `<li>${formatInline(item)}</li>`).join('')}</ul>`);
+        listItems = [];
+      }
+
+      lines.forEach((line) => {
+        const trimmed = line.trim();
+
+        if (!trimmed) {
+          flushList();
+          parts.push('<br>');
+          return;
+        }
+
+        if (trimmed.startsWith('## ')) {
+          flushList();
+          parts.push(`<span class="doc-heading">${formatInline(trimmed.slice(3))}</span>`);
+          return;
+        }
+
+        if (trimmed.startsWith('# ')) {
+          flushList();
+          parts.push(`<span class="doc-subheading">${formatInline(trimmed.slice(2))}</span>`);
+          return;
+        }
+
+        if (trimmed.startsWith('* ')) {
+          listItems.push(trimmed.slice(2));
+          return;
+        }
+
+        flushList();
+        parts.push(`<span>${formatInline(trimmed)}</span>`);
+      });
+
+      flushList();
+      return parts.join('<br>').replace(/<br><br><br>/g, '<br><br>');
     }
 
     function makeImage(src, altText) {
@@ -357,7 +467,7 @@
 
         const textDiv = document.createElement('div');
         textDiv.className = 'text-content';
-        textDiv.innerHTML = `<strong>${formatText(row['Data 1'])}</strong>`;
+        textDiv.innerHTML = `<strong>${formatInline(row['Data 1'])}</strong>`;
         if (row['Data 2']) textDiv.innerHTML += `<br>${formatText(row['Data 2'])}`;
         rowDiv.appendChild(textDiv);
 
@@ -387,7 +497,7 @@
       stepGroups.forEach((rows, stepTitle) => {
         const block = document.createElement('div');
         block.className = 'step-block';
-        block.innerHTML = `<h3>${formatText(stepTitle)}</h3>`;
+        block.innerHTML = `<h3>${formatInline(stepTitle)}</h3>`;
 
         rows.forEach((row) => {
           const item = document.createElement('div');
@@ -425,7 +535,7 @@
 
         const body = document.createElement('div');
         body.className = 'room-card-body';
-        body.innerHTML = `<h3>${formatText(row['Data 1'])}</h3><p>${formatText(row['Data 2'])}</p>`;
+        body.innerHTML = `<h3>${formatInline(row['Data 1'])}</h3><p>${formatText(row['Data 2'])}</p>`;
         card.appendChild(body);
 
         grid.appendChild(card);
