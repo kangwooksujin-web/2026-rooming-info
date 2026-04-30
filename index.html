@@ -535,10 +535,6 @@
 
     function renderReservationSteps(sectionData) {
       const section = createSection(sectionData.title);
-      const note = document.createElement('p');
-      note.className = 'section-note';
-      note.innerHTML = 'Follow each step in order. <span class="highlight-red">Please complete email verification within 10 minutes.</span>';
-      section.appendChild(note);
 
       const stepGroups = new Map();
       sectionData.rows.forEach((row) => {
@@ -602,21 +598,20 @@
       const section = createSection(sectionData.title);
       const card = document.createElement('div');
       card.className = 'support-card';
-      card.innerHTML = `
-        <h3>Need help with your hotel reservation?</h3>
-        <p>If you have any questions about accommodations, please send us a text message. We will do our best to reply <span class="highlight-red">within 24 hours</span> whenever possible.</p>
-        <p>For general hotel and accommodation questions, contact Jung Hyun Myoung. For technical issues during the reservation process, contact Lee Moonkyung.</p>
-        <div class="support-actions">
-          <a class="sms-link" href="sms:01035896061">
-            <strong>💬 Text Jung Hyun Myoung</strong>
-            Accommodation questions<br>010-3589-6061
-          </a>
-          <a class="sms-link" href="sms:01055241935">
-            <strong>💬 Text Lee Moonkyung</strong>
-            Reservation process errors<br>010-5524-1935
-          </a>
-        </div>
-      `;
+
+      sectionData.rows.forEach((row) => {
+        const item = document.createElement('div');
+        item.className = 'data-row';
+
+        const textDiv = document.createElement('div');
+        textDiv.className = 'text-content';
+        textDiv.innerHTML = `<strong>${formatLabel(row['Data 1'])}</strong>`;
+        if (row['Data 2']) textDiv.innerHTML += `<br>${formatText(row['Data 2'])}`;
+        item.appendChild(textDiv);
+
+        card.appendChild(item);
+      });
+
       section.appendChild(card);
       return section;
     }
