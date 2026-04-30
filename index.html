@@ -576,18 +576,32 @@
       }
       .reservation-timeline {
         padding: 12px;
+        overflow: hidden;
       }
       .timeline-bar {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        display: flex;
+        gap: 12px;
+        margin: 0 -12px;
+        padding: 4px 12px 12px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: thin;
       }
       .timeline-bar::before {
         display: none;
       }
       .timeline-segment {
-        padding: 16px 10px 12px;
+        flex: 0 0 72%;
+        min-width: 220px;
+        padding: 16px 12px 12px;
+        scroll-snap-align: center;
       }
       .timeline-segment strong {
         min-height: 0;
+      }
+      .timeline-detail {
+        font-size: 0.95rem;
+        line-height: 1.6;
       }
       section { padding: 25px; }
       .instruction-image,
@@ -608,7 +622,7 @@
     <header>
       <span class="convention-logo">2026 ENGLISH REGIONAL CONVENTION</span>
       <h1>ETERNAL HAPPINESS</h1>
-      <p class="helpdesk-subtitle">[Convention Rooming Department]</p>
+      <p class="helpdesk-subtitle">[Rooming Department]</p>
       <div id="reservation-timeline" class="reservation-timeline" aria-label="Reservation timeline">
         <div class="timeline-caption">Reservation Timeline</div>
         <p class="timeline-hint">Click each date to view details.</p>
