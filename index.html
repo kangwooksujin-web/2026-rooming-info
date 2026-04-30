@@ -411,6 +411,13 @@
         .replace(/\*\*(.*?)\*\*/g, '<span class="highlight-red">$1</span>');
     }
 
+    function formatLabel(value) {
+      const cleanedValue = String(value || '')
+        .replace(/^\s*#{1,3}\s+/, '')
+        .replace(/^\s*\*\s+/, '');
+      return formatInline(cleanedValue);
+    }
+
     function formatText(value) {
       const lines = String(value || '').split(/\r?\n/);
       const parts = [];
@@ -513,7 +520,7 @@
 
         const textDiv = document.createElement('div');
         textDiv.className = 'text-content';
-        textDiv.innerHTML = `<strong>${formatInline(row['Data 1'])}</strong>`;
+        textDiv.innerHTML = `<strong>${formatLabel(row['Data 1'])}</strong>`;
         if (row['Data 2']) textDiv.innerHTML += `<br>${formatText(row['Data 2'])}`;
         rowDiv.appendChild(textDiv);
 
@@ -543,7 +550,7 @@
       stepGroups.forEach((rows, stepTitle) => {
         const block = document.createElement('div');
         block.className = 'step-block';
-        block.innerHTML = `<h3>${formatInline(stepTitle)}</h3>`;
+        block.innerHTML = `<h3>${formatLabel(stepTitle)}</h3>`;
 
         rows.forEach((row) => {
           const item = document.createElement('div');
@@ -581,7 +588,7 @@
 
         const body = document.createElement('div');
         body.className = 'room-card-body';
-        body.innerHTML = `<h3>${formatInline(row['Data 1'])}</h3><p>${formatText(row['Data 2'])}</p>`;
+        body.innerHTML = `<h3>${formatLabel(row['Data 1'])}</h3><p>${formatText(row['Data 2'])}</p>`;
         card.appendChild(body);
 
         grid.appendChild(card);
