@@ -575,31 +575,67 @@
         letter-spacing: 0.04em;
       }
       .reservation-timeline {
-        padding: 12px;
-        overflow: hidden;
+        padding: 16px;
       }
       .timeline-bar {
-        display: flex;
-        gap: 12px;
-        margin: 0 -12px;
-        padding: 4px 12px 12px;
-        overflow-x: auto;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: thin;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin: 0;
+        padding: 0 0 0 18px;
+        overflow: visible;
       }
       .timeline-bar::before {
-        display: none;
+        display: block;
+        top: 16px;
+        bottom: 16px;
+        left: 15px;
+        right: auto;
+        width: 3px;
+        height: auto;
+        background: linear-gradient(180deg, #9fc8e8 0%, #8fb86e 43%, #d8c978 74%, #d56f61 100%);
+        opacity: 0.5;
       }
       .timeline-segment {
-        flex: 0 0 72%;
-        min-width: 220px;
-        padding: 16px 12px 12px;
-        scroll-snap-align: center;
+        display: grid;
+        grid-template-columns: 34px 1fr;
+        column-gap: 10px;
+        align-items: center;
+        min-width: 0;
+        padding: 12px 14px 12px 8px;
+        text-align: left;
+        border-radius: 14px;
+      }
+      .timeline-segment.is-active {
+        transform: translateX(3px);
+      }
+      .timeline-node {
+        grid-row: 1 / span 3;
+        width: 18px;
+        height: 18px;
+        margin: 0 auto;
+        border-width: 4px;
+      }
+      .timeline-segment small,
+      .timeline-segment strong,
+      .timeline-segment span:not(.timeline-node) {
+        line-height: 1.2;
+      }
+      .timeline-segment small {
+        margin-bottom: 3px;
+        font-size: 0.7rem;
       }
       .timeline-segment strong {
         min-height: 0;
+        font-size: 0.95rem;
+      }
+      .timeline-note {
+        margin-top: 4px;
+        font-size: 0.74rem;
       }
       .timeline-detail {
+        margin-top: 12px;
+        padding: 12px 14px 12px 34px;
         font-size: 0.95rem;
         line-height: 1.6;
       }
