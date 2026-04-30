@@ -304,6 +304,18 @@
       white-space: nowrap;
     }
 
+    .copy-link {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .copy-message {
+      min-height: 1.5em;
+      margin-top: 12px;
+      color: var(--leaf-green);
+      font-weight: 700;
+    }
+
     .doc-divider {
       height: 1px;
       margin: 18px 0;
@@ -616,6 +628,58 @@
       return section;
     }
 
+    function renderReadyToBook(sectionData) {
+      const section = createSection(sectionData.title);
+      const rowDiv = document.createElement('div');
+      rowDiv.className = 'data-row';
+      rowDiv.innerHTML = `
+        <div class="text-content">
+          Click below to copy the address. Paste it into your browser and get started!
+          <br><br>
+          <button type="button" class="action-chip copy-link" data-copy-url="https://rl.jw.org">https://rl.jw.org</button>
+          <div class="copy-message" aria-live="polite"></div>
+        </div>
+      `;
+
+      const imageRow = sectionData.rows.find((row) => row['Image']);
+      const img = imageRow ? makeImage(imageRow['Image'], 'Reservation site preview') : null;
+      if (img) rowDiv.appendChild(img);
+
+      section.appendChild(rowDiv);
+      return section;
+    }
+
+    async function copyReservationUrl(button) {
+      const url = button.dataset.copyUrl;
+      const message = button.parentElement.querySelector('.copy-message');
+
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(url);
+        } else {
+          const textArea = document.createElement('textarea');
+          textArea.value = url;
+          textArea.style.position = 'fixed';
+          textArea.style.left = '-9999px';
+          document.body.appendChild(textArea);
+          textArea.focus();
+          textArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textArea);
+        }
+
+        if (message) message.textContent = 'Address copied to clipboard.';
+      } catch (error) {
+        if (message) message.textContent = 'Please copy this address manually: https://rl.jw.org';
+      }
+    }
+
+    function attachCopyLinkHandlers(root = document) {
+      root.querySelectorAll('[data-copy-url]').forEach((button) => {
+        button.addEventListener('click', () => copyReservationUrl(button));
+      });
+    }
+
     function isSectionTitle(sectionData, titles) {
       const normalizedTitle = String(sectionData.title || '').trim();
       return titles.includes(normalizedTitle);
@@ -676,6 +740,8 @@
           contentArea.appendChild(renderRoomInformation(sectionData));
         } else if (isSectionTitle(sectionData, ['6. Support', 'Need Help', 'Need Help & Support'])) {
           contentArea.appendChild(renderSupport(sectionData));
+        } else if (isSectionTitle(sectionData, ['Ready to Book?', 'Now is your turn!'])) {
+          contentArea.appendChild(renderReadyToBook(sectionData));
         } else {
           contentArea.appendChild(renderDefaultSection(sectionData));
         }
@@ -685,6 +751,7 @@
     function renderUI(data) {
       const contentArea = document.getElementById('content-area');
       renderStructuredUI(data, contentArea);
+      attachCopyLinkHandlers(contentArea);
     }
 
     function initializePage() {
