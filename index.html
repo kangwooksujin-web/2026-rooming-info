@@ -929,7 +929,7 @@
 
     function getSupportContact(label) {
       const normalizedLabel = String(label || '').toLowerCase();
-      if (normalizedLabel.includes('general')) return 'Jung Hyun Myoung';
+      if (normalizedLabel.includes('general')) return 'Henry Hyunmyung Jung';
       if (normalizedLabel.includes('technical')) return 'Lee Moonkyung';
       return '';
     }
@@ -946,9 +946,12 @@
         .replace(/\*\*/g, '')
         .replace(/\s+/g, ' ')
         .trim();
+      const contactPattern = contactName === 'Henry Hyunmyung Jung'
+        ? '(Henry Hyunmyung Jung|Jung Hyun Myoung)'
+        : contactName;
 
       return plainText
-        .replace(new RegExp(`,?\\s*please text\\s+${contactName}\\.?$`, 'i'), '')
+        .replace(new RegExp(`,?\\s*please text\\s+${contactPattern}\\.?$`, 'i'), '')
         .replace(/\.$/, '')
         .trim();
     }
