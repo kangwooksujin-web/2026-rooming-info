@@ -438,6 +438,23 @@
       margin-bottom: 5px;
     }
 
+    .sms-link span {
+      display: block;
+    }
+
+    .sms-link .sms-hint {
+      display: inline-flex;
+      align-items: center;
+      margin-top: 12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(232,246,255,0.78);
+      border: 1px solid rgba(159,200,232,0.58);
+      color: var(--sky-deep);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
     .highlight-red {
       color: #c53030;
       font-weight: 700;
@@ -832,6 +849,13 @@
       return section;
     }
 
+    function getSupportSmsHref(label) {
+      const normalizedLabel = String(label || '').toLowerCase();
+      if (normalizedLabel.includes('general')) return 'sms:01035896061';
+      if (normalizedLabel.includes('technical')) return 'sms:01055241935';
+      return '';
+    }
+
     function renderSupport(sectionData) {
       const section = createSection(sectionData.title);
       const card = document.createElement('div');
@@ -840,10 +864,7 @@
       const [introRow, ...supportRows] = sectionData.rows;
       if (introRow) {
         const intro = document.createElement('p');
-        intro.innerHTML = [introRow['Data 1'], introRow['Data 2']]
-          .filter(Boolean)
-          .map(formatText)
-          .join('<br>');
+        intro.innerHTML = 'For questions, use the <span class="action-chip">Inquiry</span> button on the reservation site.';
         card.appendChild(intro);
       }
 
@@ -852,11 +873,14 @@
         actions.className = 'support-actions';
 
         supportRows.forEach((row) => {
-          const item = document.createElement('div');
+          const smsHref = getSupportSmsHref(row['Data 1']);
+          const item = document.createElement(smsHref ? 'a' : 'div');
           item.className = 'sms-link';
+          if (smsHref) item.href = smsHref;
           item.innerHTML = `
             <strong>${formatLabel(row['Data 1'])}</strong>
             <span>${formatText(row['Data 2'])}</span>
+            ${smsHref ? '<span class="sms-hint">Tap to send a text message</span>' : ''}
           `;
           actions.appendChild(item);
         });
