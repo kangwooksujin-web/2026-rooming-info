@@ -450,9 +450,17 @@
     }
 
     .sms-contact {
+      display: flex;
+      align-items: center;
+      gap: 8px;
       margin-top: 8px;
       color: var(--sky-deep);
       font-weight: 800;
+    }
+
+    .sms-contact-icon {
+      font-size: 1.15em;
+      line-height: 1;
     }
 
     .sms-link .sms-hint {
@@ -671,19 +679,19 @@
           </button>
           <button type="button" class="timeline-segment timeline-booking" data-timeline-key="booking" role="tab">
             <span class="timeline-node" aria-hidden="true"></span>
-            <small>Until June 14</small>
+            <small>Until June 14, Sunday</small>
             <strong>Book or Change</strong>
             <span class="timeline-note">11:59 PM</span>
           </button>
           <button type="button" class="timeline-segment timeline-cancel" data-timeline-key="cancel" role="tab">
             <span class="timeline-node" aria-hidden="true"></span>
-            <small>Until July 8</small>
+            <small>Until July 8, Wednesday</small>
             <strong>Free Cancellation</strong>
             <span class="timeline-note">No penalty</span>
           </button>
           <button type="button" class="timeline-segment timeline-fee" data-timeline-key="fee" role="tab">
             <span class="timeline-node" aria-hidden="true"></span>
-            <small>After July 8</small>
+            <small>After July 8, Wednesday</small>
             <strong>Fee Applies</strong>
             <span class="timeline-note">1 night's stay</span>
           </button>
@@ -926,6 +934,13 @@
       return '';
     }
 
+    function getSupportIcon(label) {
+      const normalizedLabel = String(label || '').toLowerCase();
+      if (normalizedLabel.includes('general')) return '🙋‍♂️';
+      if (normalizedLabel.includes('technical')) return '👨‍💻';
+      return '💬';
+    }
+
     function getSupportDescription(text, contactName) {
       const plainText = String(text || '')
         .replace(/\*\*/g, '')
@@ -957,6 +972,7 @@
         supportRows.forEach((row) => {
           const smsHref = getSupportSmsHref(row['Data 1']);
           const contactName = getSupportContact(row['Data 1']);
+          const contactIcon = getSupportIcon(row['Data 1']);
           const description = getSupportDescription(row['Data 2'], contactName);
           const item = document.createElement(smsHref ? 'a' : 'div');
           item.className = 'sms-link';
@@ -964,7 +980,7 @@
           item.innerHTML = `
             <strong>${formatLabel(row['Data 1'])}</strong>
             <span>${formatText(description)}</span>
-            ${contactName ? `<span class="sms-contact">Text ${contactName}</span>` : ''}
+            ${contactName ? `<span class="sms-contact"><span class="sms-contact-icon">${contactIcon}</span>${contactName}</span>` : ''}
             ${smsHref ? '<span class="sms-hint">Tap to send a text message</span>' : ''}
           `;
           actions.appendChild(item);
@@ -1049,7 +1065,7 @@
       open: 'Reservations open on May 1, Friday, at 8:00 AM.',
       booking: 'You may make or change your reservation until June 14, Sunday, at 11:59 PM.',
       cancel: 'You may cancel without a penalty until July 8, Wednesday.',
-      fee: 'After July 8, free cancellation is no longer available. A cancellation fee equal to one night\'s stay will apply.'
+      fee: 'After July 8, Wednesday, free cancellation is no longer available. A cancellation fee equal to one night\'s stay will apply.'
     };
 
     function setTimelineActive(key) {
