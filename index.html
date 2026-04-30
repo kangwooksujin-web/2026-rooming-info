@@ -86,6 +86,29 @@
       line-height: 1.2;
     }
 
+    .helpdesk-subtitle {
+      color: var(--sky-deep);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      margin: 18px 0 12px;
+      text-transform: uppercase;
+    }
+
+    .reservation-status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid rgba(159,200,232,0.5);
+      color: var(--navy-primary);
+      font-weight: 700;
+      box-shadow: 0 8px 22px rgba(71,125,168,0.08);
+    }
+
     section {
       background: var(--white);
       border-radius: 18px;
@@ -281,6 +304,12 @@
       white-space: nowrap;
     }
 
+    .doc-divider {
+      height: 1px;
+      margin: 18px 0;
+      background: linear-gradient(90deg, transparent, rgba(143,184,110,0.48), transparent);
+    }
+
     .instruction-image {
       width: min(100%, 640px);
       max-width: 100%;
@@ -320,6 +349,10 @@
 
     @media (max-width: 600px) {
       h1 { font-size: 1.8rem; }
+      .helpdesk-subtitle {
+        font-size: 0.85rem;
+        letter-spacing: 0.04em;
+      }
       section { padding: 25px; }
       .instruction-image,
       .step-item .instruction-image {
@@ -339,7 +372,8 @@
     <header>
       <span class="convention-logo">2026 ENGLISH REGIONAL CONVENTION</span>
       <h1>ETERNAL HAPPINESS</h1>
-      <p style="color: var(--navy-primary); font-weight: 500; margin-top: 15px;">Reservation Starts: May 1, 08:00 AM</p>
+      <p class="helpdesk-subtitle">2026 English Regional Convention Rooming Help Desk</p>
+      <p id="reservation-status" class="reservation-status">May 1, 08:00 AM</p>
     </header>
 
     <div id="content-area">
@@ -397,9 +431,21 @@
           return;
         }
 
+        if (trimmed === '***') {
+          flushList();
+          parts.push('<div class="doc-divider"></div>');
+          return;
+        }
+
         if (trimmed.startsWith('## ')) {
           flushList();
           parts.push(`<span class="doc-heading">${formatInline(trimmed.slice(3))}</span>`);
+          return;
+        }
+
+        if (trimmed.startsWith('### ')) {
+          flushList();
+          parts.push(`<span class="doc-subheading">${formatInline(trimmed.slice(4))}</span>`);
           return;
         }
 
@@ -568,15 +614,65 @@
       return section;
     }
 
+    function isSectionTitle(sectionData, titles) {
+      const normalizedTitle = String(sectionData.title || '').trim();
+      return titles.includes(normalizedTitle);
+    }
+
+    function getReservationStatus(today = new Date()) {
+      const year = 2026;
+      const startDate = new Date(year, 4, 1);
+      const deadline = new Date(year, 4, 31);
+      const current = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+      const oneDay = 24 * 60 * 60 * 1000;
+
+      if (current < startDate) {
+        const daysUntilStart = Math.ceil((startDate - current) / oneDay);
+        const status = daysUntilStart === 1 ? 'TOMORROW' : `D-${daysUntilStart}`;
+        return {
+          label: 'May 1, 08:00 AM',
+          status
+        };
+      }
+
+      if (current.getTime() === startDate.getTime()) {
+        return {
+          label: 'May 1, 08:00 AM',
+          status: 'TODAY'
+        };
+      }
+
+      if (current <= deadline) {
+        const daysUntilDeadline = Math.ceil((deadline - current) / oneDay);
+        return {
+          label: 'Reservation Deadline: May 31',
+          status: daysUntilDeadline === 0 ? 'TODAY' : `D-${daysUntilDeadline}`
+        };
+      }
+
+      return {
+        label: 'Reservation Deadline',
+        status: 'HAS PASSED'
+      };
+    }
+
+    function updateReservationStatus(today = new Date()) {
+      const statusElement = document.getElementById('reservation-status');
+      if (!statusElement) return;
+
+      const reservationStatus = getReservationStatus(today);
+      statusElement.innerHTML = `${reservationStatus.label} - <span class="highlight-red">${reservationStatus.status}</span>`;
+    }
+
     function renderStructuredUI(data, contentArea) {
       contentArea.innerHTML = '';
 
       groupRowsBySection(data).forEach((sectionData) => {
-        if (sectionData.title === '2. Reservation Steps') {
+        if (isSectionTitle(sectionData, ['2. Reservation Steps', 'Booking Process'])) {
           contentArea.appendChild(renderReservationSteps(sectionData));
-        } else if (sectionData.title === '3. Important Room Information') {
+        } else if (isSectionTitle(sectionData, ['3. Important Room Information', 'Room Details', 'Hotel Room Details'])) {
           contentArea.appendChild(renderRoomInformation(sectionData));
-        } else if (sectionData.title === '6. Support') {
+        } else if (isSectionTitle(sectionData, ['6. Support', 'Need Help', 'Need Help & Support'])) {
           contentArea.appendChild(renderSupport(sectionData));
         } else {
           contentArea.appendChild(renderDefaultSection(sectionData));
@@ -589,8 +685,13 @@
       renderStructuredUI(data, contentArea);
     }
 
+    function initializePage() {
+      updateReservationStatus();
+      loadData();
+    }
+
     // 페이지가 로드되면 데이터 가져오기 시작
-    window.addEventListener('DOMContentLoaded', loadData);
+    window.addEventListener('DOMContentLoaded', initializePage);
   </script>
 </body>
 </html>
