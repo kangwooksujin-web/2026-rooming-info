@@ -97,63 +97,103 @@
     .reservation-timeline {
       max-width: 760px;
       margin: 18px auto 0;
-      padding: 16px;
-      border-radius: 18px;
-      background: rgba(255,255,255,0.78);
-      border: 1px solid rgba(159,200,232,0.55);
-      box-shadow: 0 12px 28px rgba(71,125,168,0.1);
+      padding: 18px;
+      border-radius: 22px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9) 0%, rgba(248,252,255,0.8) 100%);
+      border: 1px solid rgba(159,200,232,0.62);
+      box-shadow: 0 16px 36px rgba(71,125,168,0.13);
     }
 
-    .timeline-summary {
-      margin-bottom: 12px;
+    .timeline-caption {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 16px;
       color: var(--navy-primary);
       font-weight: 800;
-      font-size: 0.98rem;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .timeline-caption::before,
+    .timeline-caption::after {
+      content: "";
+      width: 42px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(95,127,74,0.5));
+    }
+
+    .timeline-caption::after {
+      background: linear-gradient(90deg, rgba(95,127,74,0.5), transparent);
     }
 
     .timeline-bar {
-      display: flex;
-      min-height: 76px;
-      overflow: hidden;
-      border-radius: 14px;
-      border: 1px solid rgba(36,59,83,0.1);
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .timeline-bar::before {
+      content: "";
+      position: absolute;
+      top: 31px;
+      left: 8%;
+      right: 8%;
+      height: 4px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #9fc8e8 0%, #8fb86e 43%, #d8c978 74%, #d56f61 100%);
+      opacity: 0.45;
     }
 
     .timeline-segment {
       position: relative;
-      flex: 1;
       border: 0;
-      border-right: 1px solid rgba(255,255,255,0.65);
-      padding: 12px 10px;
+      border-radius: 18px;
+      padding: 20px 12px 14px;
       color: var(--navy-primary);
       cursor: pointer;
-      text-align: left;
+      text-align: center;
       font: inherit;
+      box-shadow: 0 10px 22px rgba(36,59,83,0.1);
       transition: transform 0.18s ease, filter 0.18s ease, box-shadow 0.18s ease;
-    }
-
-    .timeline-segment:last-child {
-      border-right: 0;
     }
 
     .timeline-segment:hover,
     .timeline-segment.is-active {
       filter: saturate(1.1);
-      box-shadow: inset 0 -5px 0 rgba(36,59,83,0.2);
+      box-shadow: 0 16px 30px rgba(36,59,83,0.16);
     }
 
     .timeline-segment.is-active {
-      transform: translateY(-2px);
+      transform: translateY(-4px);
+      outline: 2px solid rgba(36,59,83,0.16);
+      outline-offset: 3px;
+    }
+
+    .timeline-node {
+      display: grid;
+      place-items: center;
+      width: 28px;
+      height: 28px;
+      margin: -6px auto 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.95);
+      border: 4px solid currentColor;
+      box-shadow: 0 4px 10px rgba(36,59,83,0.12);
     }
 
     .timeline-segment small,
-    .timeline-segment strong {
+    .timeline-segment strong,
+    .timeline-segment span:not(.timeline-node) {
       display: block;
       line-height: 1.25;
     }
 
     .timeline-segment small {
-      margin-bottom: 6px;
+      margin-bottom: 8px;
       font-size: 0.72rem;
       font-weight: 800;
       text-transform: uppercase;
@@ -162,34 +202,34 @@
 
     .timeline-segment strong {
       font-size: 0.92rem;
+      min-height: 2.3em;
+    }
+
+    .timeline-note {
+      margin-top: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: rgba(36,49,63,0.74);
     }
 
     .timeline-open {
       background: linear-gradient(180deg, #e8f6ff 0%, #cfe8f9 100%);
+      color: #315f86;
     }
 
     .timeline-booking {
       background: linear-gradient(180deg, #eef8e8 0%, #d9edc9 100%);
+      color: #476c34;
     }
 
     .timeline-cancel {
       background: linear-gradient(180deg, #fff6d7 0%, #ece2aa 100%);
+      color: #746323;
     }
 
     .timeline-fee {
       background: linear-gradient(180deg, #ffe9e4 0%, #f2b5a9 100%);
       color: #7f1d1d;
-    }
-
-    .timeline-detail {
-      min-height: 3.2em;
-      margin-top: 12px;
-      padding: 12px 14px;
-      border-radius: 12px;
-      background: rgba(248,252,255,0.82);
-      color: var(--text-dark);
-      font-weight: 600;
-      text-align: left;
     }
 
     section {
@@ -452,16 +492,16 @@
         padding: 12px;
       }
       .timeline-bar {
-        display: grid;
-        grid-template-columns: 1fr;
-        min-height: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .timeline-bar::before {
+        display: none;
       }
       .timeline-segment {
-        border-right: 0;
-        border-bottom: 1px solid rgba(255,255,255,0.75);
+        padding: 16px 10px 12px;
       }
-      .timeline-segment:last-child {
-        border-bottom: 0;
+      .timeline-segment strong {
+        min-height: 0;
       }
       section { padding: 25px; }
       .instruction-image,
@@ -484,28 +524,33 @@
       <h1>ETERNAL HAPPINESS</h1>
       <p class="helpdesk-subtitle">[Convention Rooming Department]</p>
       <div id="reservation-timeline" class="reservation-timeline" aria-label="Reservation timeline">
-        <div id="timeline-summary" class="timeline-summary">
-          Reservations open May 1 at 8:00 AM.
-        </div>
+        <div class="timeline-caption">Reservation Timeline</div>
         <div class="timeline-bar" role="tablist" aria-label="Important reservation dates">
           <button type="button" class="timeline-segment timeline-open" data-timeline-key="open" role="tab">
+            <span class="timeline-node" aria-hidden="true"></span>
             <small>May 1, Friday</small>
             <strong>Reservations Open</strong>
+            <span class="timeline-note">8:00 AM</span>
           </button>
           <button type="button" class="timeline-segment timeline-booking" data-timeline-key="booking" role="tab">
+            <span class="timeline-node" aria-hidden="true"></span>
             <small>Until June 14</small>
             <strong>Book or Change</strong>
+            <span class="timeline-note">11:59 PM</span>
           </button>
           <button type="button" class="timeline-segment timeline-cancel" data-timeline-key="cancel" role="tab">
+            <span class="timeline-node" aria-hidden="true"></span>
             <small>Until July 8</small>
             <strong>Free Cancellation</strong>
+            <span class="timeline-note">No penalty</span>
           </button>
           <button type="button" class="timeline-segment timeline-fee" data-timeline-key="fee" role="tab">
+            <span class="timeline-node" aria-hidden="true"></span>
             <small>After July 8</small>
             <strong>Fee Applies</strong>
+            <span class="timeline-note">1 night's stay</span>
           </button>
         </div>
-        <div id="timeline-detail" class="timeline-detail" aria-live="polite"></div>
       </div>
     </header>
 
@@ -806,25 +851,6 @@
       return titles.includes(normalizedTitle);
     }
 
-    const TIMELINE_ITEMS = {
-      open: {
-        summary: 'Reservations open May 1 at 8:00 AM.',
-        detail: 'Reservations open on May 1, Friday, at 8:00 AM.'
-      },
-      booking: {
-        summary: 'Booking is available until June 14 at 11:59 PM.',
-        detail: 'You may make or change your reservation until June 14, Sunday, at 11:59 PM.'
-      },
-      cancel: {
-        summary: 'Free cancellation is available until July 8.',
-        detail: 'You may cancel without a penalty until July 8, Wednesday.'
-      },
-      fee: {
-        summary: 'After July 8, a cancellation fee applies.',
-        detail: 'After July 8, free cancellation is no longer available. A cancellation fee equal to one night\'s stay will apply.'
-      }
-    };
-
     function getTimelineKey(today = new Date()) {
       const reservationOpen = new Date(2026, 4, 1, 8, 0, 0);
       const bookingDeadline = new Date(2026, 5, 14, 23, 59, 59);
@@ -837,18 +863,11 @@
     }
 
     function setTimelineActive(key) {
-      const summaryElement = document.getElementById('timeline-summary');
-      const detailElement = document.getElementById('timeline-detail');
-      const timelineItem = TIMELINE_ITEMS[key] || TIMELINE_ITEMS.open;
-
       document.querySelectorAll('[data-timeline-key]').forEach((button) => {
         const isActive = button.dataset.timelineKey === key;
         button.classList.toggle('is-active', isActive);
         button.setAttribute('aria-selected', String(isActive));
       });
-
-      if (summaryElement) summaryElement.textContent = timelineItem.summary;
-      if (detailElement) detailElement.textContent = timelineItem.detail;
     }
 
     function initializeReservationTimeline(today = new Date()) {
